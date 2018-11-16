@@ -1,14 +1,20 @@
 {
   "name": "express-with-nodemon-browsersync",
-  "version": "1.1.0",
+	"version": "1.1.0",
+	"private": true,
   "description": "Auto restart ExpressJS server and auto reload browser on file changes.",
   "scripts": {
     "start": "npm run start:dev",
-    "start:dev": "nodemon index.js",
+    "start:dev": "nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production node index.js"
   },
   "dependencies": {
+    "@google-cloud/vision": "^0.22.1",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.1.0",
+    "ejs": "^2.6.1",
     "express": "4.14.0",
+    "grpc": "^1.16.0",
     "shrink-ray": "0.1.3"
   },
   "devDependencies": {

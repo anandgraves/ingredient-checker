@@ -1,0 +1,23 @@
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Test</title>
+	<style>
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<form class="form" action="/image" method="post">
+		<input type="hidden" name="imageUrl" data-image-url />
+		<button type="button" data-upload-image>upload image</button>
+		<button type="submit">submit</button>
+	</form>
+
+	<script async src="https://widget.cloudinary.com/global/all.js"></script>
+	<script src="/assets/upload-image.js"></script>
+</body>
+</html>
