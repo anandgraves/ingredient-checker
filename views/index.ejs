@@ -3,9 +3,39 @@
 	<meta name="viewport" content="width=device-width">
 	<title>Test</title>
 	<style>
+		html {
+			font-size: 112.5%;
+		}
+
+		form {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+
 		img {
 			max-width: 100%;
 			height: auto;
+		}
+
+		button {
+			display: inline-block;
+			min-width: 15rem;
+			padding: 1rem 1.5rem;
+			border: 1px solid #000;
+			border-radius: 10px;
+			cursor: pointer;
+			background-color: hsl(150, 59%, 54%);
+			font-family: inherit;
+			font-size: inherit;
+			text-transform: uppercase;
+			letter-spacing: .8px;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		
+		[hidden] {
+			display: none;
 		}
 	</style>
 </head>
@@ -13,8 +43,8 @@
 <body>
 	<form class="form" action="/image" method="post">
 		<input type="hidden" name="imageUrl" data-image-url />
-		<button type="button" data-upload-image>upload image</button>
-		<button type="submit">submit</button>
+		<button type="button" data-upload-image>take photo of ingredients</button>
+		<button type="submit" data-submit hidden>analyze ingredients</button>
 	</form>
 
 	<script async src="https://widget.cloudinary.com/global/all.js"></script>

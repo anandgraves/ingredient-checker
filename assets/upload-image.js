@@ -1,4 +1,5 @@
 const btnUploadImage = document.querySelector('[data-upload-image]')
+const btnSubmit = document.querySelector('[data-submit]')
 const inputImageUrl = document.querySelector('[data-image-url]')
 let urlUploadedPhoto
 
@@ -23,6 +24,7 @@ function onClickUploadImage(event) {
 				if (result && result[0] && typeof result[0].url !== 'undefined') {
 					urlUploadedPhoto = result[0].url
 					inputImageUrl.setAttribute('value', urlUploadedPhoto)
+					btnSubmit.removeAttribute('hidden')
 				} else {
 					console.error('Something went wrong with uploading the photo via Cloudinary', error)
 					urlUploadedPhoto = ''
