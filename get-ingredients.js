@@ -16,16 +16,42 @@ module.exports = function (req, res) {
 	client
 		.textDetection(imageUrl)
 		.then(results => {
-			const detections = results[0].textAnnotations
-			if (detections.length) {
-				console.log(detections[0])
-				const result = detections[0]
-				const locale = result.locale
-				const description = result.description
-				res.send(`language: ${locale}, text: ${description}`)
+			if (results.length === 0) {
+				message = 'Could not detect text in the uploaded image. Please try another image.'
+				res.send(message)
+				throw new Error(message)
 			}
-			res.send('Could not detect text in the uploaded image. Please try another image.')
-			//detections.forEach((text, index) => index === 0 ? console.log(text) : '');
+
+			const detections = results[0].textAnnotations
+			
+			if (detections.length === 0) {
+				res.send('Could not detect text in the uploaded image. Please try another image.')
+			}
+			
+			let hasIngredients = detections.slice(1).some(text => text.description.toLowerCase() === 'ingrediënten' || 'ingredients')
+			if (!hasIngredients) {
+				const message = 'It seems the uploaded photo doesn\'t contain ingredients. Please upload another photo.'
+				res.send(message)
+				throw new Error(message)
+			}
+
+			const texts = detections.slice(1).map(item => item.description.toLowerCase())
+			const ingredientsIndex = texts.findIndex(element => 
+				element === 'ingrediënten' || 
+				element === 'ingrediënten:' ||
+				element === 'ingredients' ||
+				element === 'ingredients:')
+			console.log('ingredientsIndex', ingredientsIndex)
+			if (ingredientsIndex === -1) {
+				const message = 'Could not find the text "ingredients". Please upload another photo.'
+				res.send(message)
+				throw new Error(message)
+			}
+			const afterIngredients = texts.slice(ingredientsIndex)
+			console.log('after ingredients', afterIngredients)
+
+			// console.log(results[0].fullTextAnnotation.text)
+			// res.send(JSON.stringify(ingredients), null, 4)
 		})
 		.catch(err => {
 			console.error(err);
