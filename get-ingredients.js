@@ -27,6 +27,9 @@ module.exports = function (req, res) {
 			if (detections.length === 0) {
 				res.send('Could not detect text in the uploaded image. Please try another image.')
 			}
+
+			const fullText = results[0]
+			console.log('results 0', fullText)
 			
 			let hasIngredients = detections.slice(1).some(text => text.description.toLowerCase() === 'ingrediënten' || 'ingredients')
 			if (!hasIngredients) {
@@ -41,7 +44,7 @@ module.exports = function (req, res) {
 				element === 'ingrediënten:' ||
 				element === 'ingredients' ||
 				element === 'ingredients:')
-			console.log('ingredientsIndex', ingredientsIndex)
+
 			if (ingredientsIndex === -1) {
 				const message = 'Could not find the text "ingredients". Please upload another photo.'
 				res.send(message)
@@ -50,8 +53,31 @@ module.exports = function (req, res) {
 			const afterIngredients = texts.slice(ingredientsIndex)
 			console.log('after ingredients', afterIngredients)
 
-			// console.log(results[0].fullTextAnnotation.text)
-			// res.send(JSON.stringify(ingredients), null, 4)
+			// Check for notes, such as 'kan sporen van ... bevatten'
+			const notesIndex = afterIngredients.findIndex((element, index) => {
+				if ((element === 'kan' && afterIngredients[index + 1] === 'sporen') ||
+				((element === 'koel' || element === 'donker') && afterIngredients[index + 1] === 'bewaren')) {
+					return true
+				}
+				return false
+			})
+			console.log('notesIndex', notesIndex, afterIngredients[notesIndex])
+			let notesIngredients
+			if (notesIndex !== -1) {
+				notesIngredients = afterIngredients.slice(0, notesIndex)
+			}
+
+			const output = `
+				after ingredients: ${afterIngredients}\n
+
+				${results[0].textAnnotations.description}\n
+
+				Full text annotation: ${results[0].fullTextAnnotation.text}\n
+
+				Notes ingredients: ${notesIngredients}
+			`
+			
+			res.send(output)
 		})
 		.catch(err => {
 			console.error(err);
