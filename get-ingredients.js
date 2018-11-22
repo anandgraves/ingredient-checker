@@ -1,14 +1,26 @@
 const dotenv = require('dotenv')
 const vision = require('@google-cloud/vision')
 const util = require('util')
+const ramda = require('ramda')
 
 dotenv.config()	
 
+const getFirst = arr => arr.slice(1)
+
+function hasText(arr) {
+	return getFirst(arr).some(text => text.description.toLowerCase() === 'ingrediënten' || 'ingredients')
+}
+
 module.exports = function (req, res) {
 	const imageUrl = req.body.imageUrl
+	console.log('imageUrl', imageUrl)
+	/*
 	if (!imageUrl) {
-		throw new Error('imageUrl is missing')
+		const message = 'imageUrl is missing'
+		res.send(message)
+		throw new Error(message)
 	}
+	*/
 
 	const client = new vision.ImageAnnotatorClient()
 
@@ -16,44 +28,45 @@ module.exports = function (req, res) {
 	client
 		.textDetection(imageUrl)
 		.then(results => {
-			if (results.length === 0) {
-				message = 'Could not detect text in the uploaded image. Please try another image.'
+			if (!results.length) {
+				const message = 'Could not detect text in the uploaded image. Please try another image.'
 				res.send(message)
 				throw new Error(message)
 			}
 
-			const detections = results[0].textAnnotations
+			const detections = results[0].textAnnotations			
 			
-			if (detections.length === 0) {
-				res.send('Could not detect text in the uploaded image. Please try another image.')
-			}
-
-			const fullText = results[0]
-			console.log('results 0', fullText)
-			
-			let hasIngredients = detections.slice(1).some(text => text.description.toLowerCase() === 'ingrediënten' || 'ingredients')
-			if (!hasIngredients) {
+			if (!hasText(detections)) {
 				const message = 'It seems the uploaded photo doesn\'t contain ingredients. Please upload another photo.'
 				res.send(message)
 				throw new Error(message)
 			}
 
-			const texts = detections.slice(1).map(item => item.description.toLowerCase())
+			// Map only prop 'description' to an array
+			const texts = getFirst(detections).map(item => item.description.toLowerCase())
 			const ingredientsIndex = texts.findIndex(element => 
 				element === 'ingrediënten' || 
 				element === 'ingrediënten:' ||
 				element === 'ingredients' ||
-				element === 'ingredients:')
+				element === 'ingredients:')	
 
 			if (ingredientsIndex === -1) {
 				const message = 'Could not find the text "ingredients". Please upload another photo.'
 				res.send(message)
 				throw new Error(message)
 			}
+			// Remove all text before the lowercased text 'ingrediënten'
 			const afterIngredients = texts.slice(ingredientsIndex)
 			console.log('after ingredients', afterIngredients)
 
-			// Check for notes, such as 'kan sporen van ... bevatten'
+			const dotAfterIngredientsIndex = afterIngredients.findIndex((element, index) => {
+				console.log(element)
+				if (element[element.length - 1] === '.' || element === '.') {
+					console.log('dot found', element)
+					return true
+				}
+				return false
+			})
 			const notesIndex = afterIngredients.findIndex((element, index) => {
 				if ((element === 'kan' && afterIngredients[index + 1] === 'sporen') ||
 				((element === 'koel' || element === 'donker') && afterIngredients[index + 1] === 'bewaren')) {
@@ -61,27 +74,32 @@ module.exports = function (req, res) {
 				}
 				return false
 			})
-			console.log('notesIndex', notesIndex, afterIngredients[notesIndex])
+
 			let notesIngredients
-			if (notesIndex !== -1) {
-				notesIngredients = afterIngredients.slice(0, notesIndex)
+			let dotAfterIngredients
+			if (dotAfterIngredientsIndex !== -1) {
+				dotAfterIngredients = afterIngredients.slice(0, dotAfterIngredientsIndex + 1)
+			} 
+			else {
+				if (notesIndex !== -1) {
+					notesIngredients = afterIngredients.slice(0, notesIndex)
+				}
 			}
 
+			const fullText = results[0] // only for testing
 			const output = `
-				after ingredients: ${afterIngredients}\n
-
-				${results[0].textAnnotations.description}\n
-
-				Full text annotation: ${results[0].fullTextAnnotation.text}\n
-
-				Notes ingredients: ${notesIngredients}
+				<p>after ingredients: ${afterIngredients}</p>
+				<p>${results[0].textAnnotations.description}</p>
+				<p>Full text annotation: ${results[0].fullTextAnnotation.text}</p>
+				<p>Dot after ingredients: ${dotAfterIngredients}</p>
+				<p>Notes ingredients: ${notesIngredients}</p>
 			`
 			
-			res.send(output)
+			//res.send(output)
+			console.log('dotAfterIngredients', dotAfterIngredients)
+			res.json(dotAfterIngredients)
 		})
 		.catch(err => {
 			console.error(err);
 		})
 }
-
-// @todo: create array of ingredients and send it to ingredients api to analyze
