@@ -9,6 +9,7 @@
 
 		form {
 			display: flex;
+			flex-direction: column;
 			align-items: center;
 			justify-content: center;
 			height: 100vh;
@@ -21,17 +22,24 @@
 
 		button {
 			display: inline-block;
+			margin-top: 1rem;
 			min-width: 15rem;
 			padding: 1rem 1.5rem;
-			border: 1px solid #000;
+			border: 1px solid #4e8a4d;
 			border-radius: 10px;
 			cursor: pointer;
-			background-color: hsl(150, 59%, 54%);
+			background-color: hsl(94, 55%, 41%);
 			font-family: inherit;
 			font-size: inherit;
-			text-transform: uppercase;
 			letter-spacing: .8px;
 			font-family: Arial, Helvetica, sans-serif;
+			color: #e4e4e4;
+		}
+
+		.image-preview {
+			max-width: 500px;
+			border: 5px solid green;
+    	border-radius: 5px;
 		}
 		
 		[hidden] {
@@ -41,10 +49,14 @@
 </head>
 
 <body>
-	<form class="form" action="/image" method="post">
+	<form class="form" action="/image" method="post" data-form>
 		<input type="hidden" name="imageUrl" data-image-url />
-		<button type="button" data-upload-image>take photo of ingredients</button>
-		<button type="submit" data-submit hidden>analyze ingredients</button>
+		<div class="image-preview" data-image-preview-container hidden>
+			<img data-image-preview />
+		</div>
+		<div class="ingredients" data-results></div>
+		<button type="button" data-upload-image>Take photo of ingredients</button>
+		<button type="submit" data-submit hidden>Read ingredients</button>
 	</form>
 
 	<script async src="https://widget.cloudinary.com/global/all.js"></script>
