@@ -18,9 +18,8 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.urlencoded({
-	extended: true
+	extended: false
 }))
-
 app.use(bodyParser.json())
 
 app.use(shrinkRay())
@@ -30,7 +29,7 @@ app.get("/", (req, res) => {
 	res.render('index')
 })
 
-app.post('/image', ingredientsRoute)
+app.post('/analyze-image', ingredientsRoute)
 
 app.listen(port, listening)
 
