@@ -41,12 +41,6 @@ function onClickUploadImage(event) {
 }
 
 function onSubmitForm(event) {
-	/*
-	if (!imageUrl) {
-		event.preventDefault()
-		throw new Error('image url is not present')
-	}
-	*/
 	event.preventDefault()
 	let formData = new FormData(form);
 	for (var key of formData.entries()) {
