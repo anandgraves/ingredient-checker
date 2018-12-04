@@ -32,7 +32,11 @@ function onClickUploadImage(event) {
 					imagePreview.setAttribute('src', inputImageUrl.getAttribute('value'))
 					imagePreviewContainer.removeAttribute('hidden')
 					btnSubmit.removeAttribute('hidden')
+					results.textContent = ''
 				} else {
+					if (error.message === 'User closed widget') {
+						return
+					}
 					console.error('Something went wrong with uploading the photo via Cloudinary', error)
 					urlUploadedPhoto = ''
 				}
