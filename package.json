@@ -6,9 +6,12 @@
   "scripts": {
     "start": "npm run start:dev",
     "start:dev": "nodemon server.js",
-		"start:prod": "cross-env NODE_ENV=production node index.js",
-		"generate-key-file": "node generate-key.js"
-  },
+    "start:prod": "cross-env NODE_ENV=production node index.js",
+    "generate-key-file": "node generate-key.js"
+	},
+	"engines": {
+		"node": ">= 8.9.0"
+	},
   "dependencies": {
     "@google-cloud/vision": "^0.22.1",
     "body-parser": "^1.18.3",
