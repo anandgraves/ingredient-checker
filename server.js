@@ -1,6 +1,5 @@
 const browserSync = require("browser-sync")
 const express = require("express")
-const shrinkRay = require("shrink-ray")
 const bodyParser = require("body-parser");
 const app = express()
 const port = 9777
@@ -22,7 +21,6 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-app.use(shrinkRay())
 app.use("/assets", express.static("assets/", { etag: isProduction, lastModified: false }))
 
 app.get("/", (req, res) => {
