@@ -1,3 +1,10 @@
+/**
+ * TODOS
+ * Ik return dotAfterIngredients en dat is soms undefined, omdat niet alle ingredienten een dot op het eind hebben.
+ * Dat levert een 'SyntaxError: Unexpected end of JSON input at fetch.then.response' op.
+ * De Fulltext gebruiken en hier op checken. Net als de Ruby app.
+ */
+
 const dotenv = require('dotenv')
 const vision = require('@google-cloud/vision')
 const util = require('util')
@@ -88,12 +95,12 @@ module.exports = function (req, res) {
 			}
 
 			const fullText = results[0] // only for testing
-			// console.log('fullText', fullText)
+			console.log('fullText', fullText)
 			// console.log('notesIngredients', notesIngredients)
-			// console.log('dotAfterIngredients', dotAfterIngredients)
+			console.log('dotAfterIngredients', dotAfterIngredients)
 			res.json(dotAfterIngredients)
 		})
 		.catch(err => {
-			console.error(err);
+			console.error('error get-ingredients', err);
 		})
 }
