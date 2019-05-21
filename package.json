@@ -10,7 +10,7 @@
     "generate-key-file": "node generate-key.js"
   },
   "engines": {
-    "node": ">= 10.0.0"
+    "node": "10.3.0"
   },
   "dependencies": {
     "@google-cloud/vision": "^0.22.1",
