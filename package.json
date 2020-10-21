@@ -10,7 +10,7 @@
     "generate-key-file": "node generate-key.js"
   },
   "engines": {
-    "node": "10.3.0"
+    "node": "12.18.0"
   },
   "dependencies": {
     "@google-cloud/vision": "^0.22.1",
@@ -23,6 +23,6 @@
   "devDependencies": {
     "browser-sync": "2.12.8",
     "cross-env": "1.0.8",
-    "nodemon": "1.9.2"
+    "nodemon": "^1.19.4"
   }
 }
