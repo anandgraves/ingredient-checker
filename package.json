@@ -13,7 +13,7 @@
     "node": "12.18.0"
   },
   "dependencies": {
-    "@google-cloud/vision": "^0.22.1",
+    "@google-cloud/vision": "^4.1.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
